@@ -1,8 +1,12 @@
 from .coders.onehot import OneHotCoder
+from .coders.ordinal import OrdinalCoder
+from .coders.numeric import StandardScalerCoder
 
 
 _REGISTRY = {
     'onehot': OneHotCoder,
+    'ordinal': OrdinalCoder,
+    'standard': StandardScalerCoder,
 }
 
 

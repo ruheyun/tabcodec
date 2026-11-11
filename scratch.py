@@ -1,13 +1,25 @@
 import pandas as pd
-from src.tabcodec.coders.onehot import OneHotCoder
+from tabcodec import ColumnSpec, TabCodec
 
 
-s = pd.Series(['a', 'b', 'a', None, 'c'])
-coder = OneHotCoder().fit(s)
-Z = coder.transform(s)
-back = coder.inverse_transform(Z)
+df = pd.DataFrame({
+    'age': [25, 30, None, 40],
+    'city': ['beijing', 'shanghai', 'beijing', None],
+    'score': [0.5, 1.2, 0.8, 2.0],
+})
 
-print(Z.shape, coder.output_dim)
-print(back.tolist())
+spec = [
+    ColumnSpec('age', kind='numeric', coder='standard'),
+    ColumnSpec('city', kind='categorical', coder='onehot'),
+    ColumnSpec('score', kind='numeric', coder='standard'),
+]
+
+
+codec = TabCodec(spec, output='frame').fit(df)
+Z = codec.transform(df)
+back = codec.inverse_transform(Z)
+
 print(Z)
+# print(Z.shape, codec.output_dim)
+print(back)
 

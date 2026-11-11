@@ -35,3 +35,29 @@ class TabCodec:
             else:
                 names.extend(f'{s.name}_{i}' for i in range(d))
         return names
+
+    def transform(self, df: pd.DataFrame):
+        blocks = [np.asarray(self.coders_[s.name].transform(df[s.name])) for s in self.spec]
+        Z = np.hstack(blocks) if blocks else np.empty((len(df), 0))
+
+        if self.output == 'frame':
+            return pd.DataFrame(Z, columns=self._column_names(), index=df.index)
+
+        return Z
+
+    def inverse_transform(self, Z):
+        if isinstance(Z, pd.DataFrame):
+            arr = Z.to_numpy()
+        else:
+            arr = np.asarray(Z)
+
+        if arr.ndim == 1:
+            arr = arr.reshape(-1, 1)
+
+        result, start = {}, 0
+        for s in self.spec:
+            coder = self.coders_[s.name]
+            d = coder.output_dim
+            result[s.name] = coder.inverse_transform(arr[:, start:start + d]).reset_index(drop=True)
+            start += d
+        return pd.DataFrame(result)

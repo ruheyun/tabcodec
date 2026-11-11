@@ -5,4 +5,5 @@ from dataclasses import dataclass, field
 class ColumnSpec:
     name: str
     kind: str = 'categorical'  # 'numeric' / 'categorical' / 'any'
+    coder: str = 'onehot'
     params: dict = field(default_factory=dict)
