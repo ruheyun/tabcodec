@@ -14,6 +14,10 @@
 ```bash
 uv add "git+https://github.com/ruheyun/tabcodec@0.1.0"
 ```
+或者
+```bash
+uv pip install "git+https://github.com/ruheyun/tabcodec@v0.1.0"
+```
 
 ## 快速开始
 
