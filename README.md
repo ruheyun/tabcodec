@@ -10,7 +10,16 @@
 - **显式缺失值策略**：数值列默认拒绝 NaN 并给出出错行号；类别列将 NaN 视为独立类别。
 
 ## 安装
+最新版本
+```bash
+uv add "git+https://github.com/ruheyun/tabcodec"
+```
+或者
+```bash
+uv pip install "git+https://github.com/ruheyun/tabcodec"
+```
 
+特定版本
 ```bash
 uv add "git+https://github.com/ruheyun/tabcodec@0.1.0"
 ```
@@ -96,4 +105,4 @@ ColumnSpec("age", kind="numeric", coder="standard", params={"allow_nan": True})
 - [ ] 编码结果的列名映射导出
 
 ## License
-
+MIT LICENSE
