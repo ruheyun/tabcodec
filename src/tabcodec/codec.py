@@ -24,7 +24,7 @@ class TabCodec:
 
     @property
     def output_dim(self) -> int:
-        return sum(c.output_dim for c in self.coders_.values)
+        return sum(c.output_dim for c in self.coders_.values())
 
     def _column_names(self):
         names = []

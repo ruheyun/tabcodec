@@ -20,6 +20,6 @@ Z = codec.transform(df)
 back = codec.inverse_transform(Z)
 
 print(Z)
-# print(Z.shape, codec.output_dim)
+print(Z.shape, codec.output_dim)
 print(back)
 
