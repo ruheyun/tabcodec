@@ -1,12 +1,14 @@
 from .coders.onehot import OneHotCoder
 from .coders.ordinal import OrdinalCoder
 from .coders.numeric import StandardScalerCoder
+from .coders.passthrough import PassthroughCoder
 
 
 _REGISTRY = {
     'onehot': OneHotCoder,
     'ordinal': OrdinalCoder,
     'standard': StandardScalerCoder,
+    'passthrough': PassthroughCoder,
 }
 
 
