@@ -1,14 +1,18 @@
 from .coders.onehot import OneHotCoder
 from .coders.ordinal import OrdinalCoder
-from .coders.numeric import StandardScalerCoder
+from .coders.numeric import SklearnNumericCoder
 from .coders.passthrough import PassthroughCoder
 
 
 _REGISTRY = {
     'onehot': OneHotCoder,
     'ordinal': OrdinalCoder,
-    'standard': StandardScalerCoder,
-    'passthrough': PassthroughCoder,
+    'standard': lambda **kwargs: SklearnNumericCoder(method="standard", **kwargs),
+    'minmax': lambda **kwargs: SklearnNumericCoder(method="minmax", **kwargs),
+    'robust': lambda **kwargs: SklearnNumericCoder(method="robust", **kwargs),
+    'quantile': lambda **kwargs: SklearnNumericCoder(method="quantile", **kwargs),
+    'power': lambda **kwargs: SklearnNumericCoder(method="power", **kwargs),
+    'passthrough': PassthroughCoder
 }
 
 

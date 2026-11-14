@@ -1,14 +1,27 @@
 import numpy as np
 import pandas as pd
 
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, QuantileTransformer, PowerTransformer
 from ..base import BaseCoder
 
 
-class StandardScalerCoder(BaseCoder):
-    def __init__(self, allow_nan: bool = False):
+class SklearnNumericCoder(BaseCoder):
+    def __init__(self, method: str = "standard", allow_nan: bool = False, **kwargs):
+        self.method = method
         self.allow_nan = allow_nan
-        self.mean_ = 0.0
-        self.std_ = 1.0
+
+        if method == "standard":
+            self.scaler = StandardScaler(**kwargs)
+        elif method == "minmax":
+            self.scaler = MinMaxScaler(**kwargs)
+        elif method == "robust":
+            self.scaler = RobustScaler(**kwargs)
+        elif method == "quantile":
+            self.scaler = QuantileTransformer(**kwargs)
+        elif method == "power":
+            self.scaler = PowerTransformer(**kwargs)
+        else:
+            raise ValueError(f"Unknown method: {method}")
 
     def _check_nan(self, raw: np.ndarray):
         if self.allow_nan:
@@ -22,16 +35,10 @@ class StandardScalerCoder(BaseCoder):
             )
         
 
-    def fit(self, X, y=None) -> 'StandardScalerCoder':
-        raw = pd.to_numeric(pd.Series(X), errors='coerce').to_numpy(dtype=float)
+    def fit(self, X, y=None) -> 'SklearnNumericCoder':
+        raw = pd.to_numeric(pd.Series(X), errors='coerce').to_numpy(dtype=float).reshape(-1, 1)
         self._check_nan(raw)
-        if self.allow_nan:
-            self.mean_ = float(np.nanmean(raw)) if len(raw) else 0.0
-            std = float(np.nanstd(raw, ddof=0)) if len(raw) else 1.0
-        else:
-            self.mean_ = float(np.mean(raw)) if len(raw) else 0.0
-            std = float(np.std(raw, ddof=0)) if len(raw) else 1.0
-        self.std_ = std if np.isfinite(std) and std > 0 else 1.0
+        self.scaler.fit(raw)
         return self
 
     @property
@@ -39,10 +46,10 @@ class StandardScalerCoder(BaseCoder):
         return 1
 
     def transform(self, X) -> np.ndarray:
-        raw = pd.to_numeric(pd.Series(X), errors='coerce').to_numpy(dtype=float)
+        raw = pd.to_numeric(pd.Series(X), errors='coerce').to_numpy(dtype=float).reshape(-1, 1)
         self._check_nan(raw)
-        return ((raw - self.mean_) / self.std_).reshape(-1, 1)
+        return self.scaler.transform(raw)
 
     def inverse_transform(self, Z) -> pd.Series:
-        z = np.asarray(Z, dtype=float).reshape(-1)
-        return pd.Series(z * self.std_ + self.mean_)
+        Z = np.asarray(Z, dtype=float)
+        return pd.Series(self.scaler.inverse_transform(Z.reshape(-1, 1)).reshape(-1))

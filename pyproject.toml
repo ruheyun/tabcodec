@@ -6,7 +6,11 @@ build-backend = 'setuptools.build_meta'
 name = 'tabcodec'
 version = '0.1.0'
 requires-python = '>=3.9'
-dependencies = ['numpy', 'pandas']
+dependencies = [
+    'numpy',
+    'pandas',
+    "scikit-learn>=1.6.1",
+]
 
 [tool.setuptools.packages.find]
 where = ['src']

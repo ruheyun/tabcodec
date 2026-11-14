@@ -9,7 +9,7 @@ df = pd.DataFrame({
 })
 
 spec = [
-    ColumnSpec('age', kind='numeric', coder='standard'),
+    ColumnSpec('age', kind='numeric', coder='minmax'),
     ColumnSpec('city', kind='categorical', coder='ordinal'),
     ColumnSpec('score', kind='numeric', coder='standard'),
 ]
